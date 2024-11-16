@@ -31,7 +31,11 @@ export default function ImprovedCollapsibleSidebar({ children }: { children: Rea
                 <div className="mt-auto p-2">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="w-full justify-start">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className={cn('w-full', isSidebarExpanded ? 'justify-start' : 'justify-center')}
+                            >
                                 <Info className="h-4 w-4" />
                                 {isSidebarExpanded && <span className="ml-2">About</span>}
                             </Button>
@@ -101,7 +105,7 @@ export default function ImprovedCollapsibleSidebar({ children }: { children: Rea
 
 function NavItem({ icon: Icon, label, expanded }: { icon: React.ElementType; label: string; expanded: boolean }) {
     return (
-        <Button variant="ghost" size="sm" className="w-full justify-start">
+        <Button variant="ghost" size="sm" className={cn('w-full', expanded ? 'justify-start' : 'justify-center')}>
             <Icon className="h-4 w-4" />
             {expanded && <span className="ml-2">{label}</span>}
         </Button>
