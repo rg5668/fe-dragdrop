@@ -18,14 +18,13 @@ export default function CommonLayout({ children }: { children: React.ReactNode }
                 <Sidebar>
                     <Header />
                     <div className={cn('pt-20')}>{children}</div>
-                    <ModeToggle />
                 </Sidebar>
             ) : (
                 <>
                     <div>{children}</div>
-                    <ModeToggle />
                 </>
             )}
+            <ModeToggle />
         </>
     );
 }

@@ -1,8 +1,20 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import React, { Suspense, useState } from 'react';
 import { columnsFromBackend } from '../data/mockData';
+import { DropResult } from 'react-beautiful-dnd';
+import dynamic from 'next/dynamic';
+
+const DragDropContext = dynamic(() => import('react-beautiful-dnd').then((mod) => mod.DragDropContext), {
+    ssr: false,
+    loading: () => <>...</>,
+});
+const Droppable = dynamic(() => import('react-beautiful-dnd').then((mod) => mod.Droppable), {
+    ssr: false,
+});
+const Draggable = dynamic(() => import('react-beautiful-dnd').then((mod) => mod.Draggable), {
+    ssr: false,
+});
 
 type Ticket = {
     id: string;
@@ -22,14 +34,6 @@ type Columns = {
 const KanbanBoard: React.FC = () => {
     const [columns, setColumns] = useState<Columns>(columnsFromBackend);
     const [isDragging, setIsDragging] = useState<boolean>(false);
-
-    const [isBrowser, setIsBrowser] = useState(false);
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setIsBrowser(true);
-        }
-    }, []);
 
     const handleDragStart = () => {
         setIsDragging(true);
@@ -71,73 +75,71 @@ const KanbanBoard: React.FC = () => {
     };
 
     return (
-        <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            {isBrowser ? (
-                <>
-                    {Object.entries(columns)?.map(([columnId, column]) => (
-                        <Droppable
-                            droppableId={columnId}
-                            key={`droppable-${columnId}`}
-                            isDropDisabled={false}
-                            isCombineEnabled={false}
-                            ignoreContainerClipping
-                            direction="vertical"
-                        >
-                            {(provided, snapshot) => (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.droppableProps}
-                                    style={{
-                                        width: '100%',
-                                        padding: '40px',
-                                        background: snapshot.isDraggingOver
-                                            ? '#d3d3d3'
-                                            : isDragging
-                                            ? '#0000ff'
-                                            : '#f0f0f0',
-                                        transition: 'background-color 0.3s ease',
-                                    }}
-                                >
-                                    <h3 style={{ userSelect: 'none' }}>{column.title.toUpperCase()}</h3>
-                                    {column.items.map((ticket, index) => (
-                                        <Draggable
-                                            key={ticket.id}
-                                            draggableId={ticket.id}
-                                            index={index}
-                                            isDragDisabled={column.title === 'Done'}
-                                        >
-                                            {(provided) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    style={{
-                                                        padding: '10px',
-                                                        margin: '0 0 10px 0',
-                                                        backgroundColor: '#fff',
-                                                        border: '1px solid #ddd',
-                                                        borderRadius: '4px',
-                                                        zIndex: snapshot.isDraggingOver ? -1 : 1,
-                                                        userSelect: 'none', // 텍스트 선택 방지
-                                                        cursor: snapshot.isDraggingOver ? 'grabbing' : 'grab',
-                                                        ...provided.draggableProps.style,
-                                                    }}
-                                                >
-                                                    <h4>{ticket.id}</h4>
-                                                    <p>{ticket.Task}</p>
-                                                    <p>{ticket.Due_Date}</p>
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    ))}
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
-                    ))}
-                </>
-            ) : null}
-        </DragDropContext>
+        <Suspense fallback={<>....</>}>
+            <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                {Object.entries(columns)?.map(([columnId, column]) => (
+                    <Droppable
+                        droppableId={columnId}
+                        key={`droppable-${columnId}`}
+                        isDropDisabled={false}
+                        isCombineEnabled={false}
+                        ignoreContainerClipping
+                        direction="vertical"
+                    >
+                        {(provided, snapshot) => (
+                            <div
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                                style={{
+                                    width: '100%',
+                                    padding: '40px',
+                                    background: snapshot.isDraggingOver
+                                        ? '#d3d3d3'
+                                        : isDragging
+                                        ? '#0000ff'
+                                        : '#f0f0f0',
+                                    transition: 'background-color 0.3s ease',
+                                }}
+                            >
+                                <h3 style={{ userSelect: 'none' }}>{column.title.toUpperCase()}</h3>
+                                {column.items.map((ticket, index) => (
+                                    <Draggable
+                                        key={ticket.id}
+                                        draggableId={ticket.id}
+                                        index={index}
+                                        isDragDisabled={column.title === 'Done'}
+                                    >
+                                        {(provided) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                                style={{
+                                                    padding: '10px',
+                                                    margin: '0 0 10px 0',
+                                                    backgroundColor: '#fff',
+                                                    border: '1px solid #ddd',
+                                                    borderRadius: '4px',
+                                                    zIndex: snapshot.isDraggingOver ? -1 : 1,
+                                                    userSelect: 'none', // 텍스트 선택 방지
+                                                    cursor: snapshot.isDraggingOver ? 'grabbing' : 'grab',
+                                                    ...provided.draggableProps.style,
+                                                }}
+                                            >
+                                                <h4>{ticket.id}</h4>
+                                                <p>{ticket.Task}</p>
+                                                <p>{ticket.Due_Date}</p>
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                ))}
+            </DragDropContext>
+        </Suspense>
     );
 };
 
