@@ -88,9 +88,7 @@ const KanbanBoard: React.FC = () => {
                                     ref={provided.innerRef}
                                     {...provided.droppableProps}
                                     style={{
-                                        margin: '0 10px',
-                                        width: '500px',
-                                        minHeight: '400px',
+                                        width: '100%',
                                         padding: '40px',
                                         background: snapshot.isDraggingOver
                                             ? '#d3d3d3'

@@ -40,7 +40,7 @@ export default function ImprovedCollapsibleSidebar({ children }: { children: Rea
                                 {isSidebarExpanded && <span className="ml-2">About</span>}
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuContent align="center" className="w-48">
                             <DropdownMenuItem>
                                 <LogOut className="mr-2 h-4 w-4" />
                                 Logout
@@ -95,10 +95,11 @@ export default function ImprovedCollapsibleSidebar({ children }: { children: Rea
                             <span className="sr-only">{isSidebarExpanded ? 'Collapse sidebar' : 'Expand sidebar'}</span>
                         </Button>
                     </div>
+
                     <NavContent />
                 </div>
             </div>
-            <main className="flex-1 overflow-auto">{children}</main>
+            <div className="flex-1 overflow-auto">{children}</div>
         </div>
     );
 }

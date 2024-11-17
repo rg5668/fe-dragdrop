@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import ImprovedCollapsibleSidebar from '@/components/Sidebar';
+import CommonLayout from '@/components/layout/CommonLayout';
+import { ThemeProvider } from '@/components/ui/theme-provider';
 
 const geistSans = localFont({
     src: './fonts/GeistVF.woff',
@@ -25,9 +26,11 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <ImprovedCollapsibleSidebar>{children}</ImprovedCollapsibleSidebar>
+                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                    <CommonLayout>{children}</CommonLayout>
+                </ThemeProvider>
             </body>
         </html>
     );
