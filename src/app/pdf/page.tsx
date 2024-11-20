@@ -56,32 +56,37 @@ const PdfGridViewer: React.FC = () => {
                     height: '80vh',
                     overflowY: 'auto',
                     marginTop: '20px',
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gridAutoRows: '300px',
-                    gap: '10px',
                 }}
             >
                 {file && (
-                    <div>
-                        <Document file={file} onLoadSuccess={onLoadSuccess}>
+                    <Document file={file} onLoadSuccess={onLoadSuccess}>
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(3, 1fr)',
+                                gap: '10px',
+                            }}
+                        >
                             {loadedPages.map((pageNumber) => (
                                 <div
                                     key={pageNumber}
                                     style={{
+                                        border: '1px solid #ddd',
+                                        background: '#f9f9f9',
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        border: '1px solid #ddd',
-                                        padding: '10px',
-                                        background: '#f9f9f9',
+                                        height: '300px', // 페이지 크기 고정
                                     }}
                                 >
-                                    <Page pageNumber={pageNumber} width={200} height={280} />
+                                    <Page
+                                        pageNumber={pageNumber}
+                                        width={200} // PDF 페이지 크기 설정
+                                    />
                                 </div>
                             ))}
-                        </Document>
-                    </div>
+                        </div>
+                    </Document>
                 )}
             </div>
         </div>
